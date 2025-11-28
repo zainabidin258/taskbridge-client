@@ -11,7 +11,7 @@ import {
 export function AppSidebar() {
   return (
     <>
-      <Sidebar className='h-full w-[250px] bg-white border-r border-gray-200'>
+      <Sidebar className='h-full bg-white border-r border-gray-200'>
         <SidebarTrigger />
         <SidebarHeader className='flex items-center justify-between py-3'>
           <h2 className='text-lg font-bold'>TaskBridge</h2>

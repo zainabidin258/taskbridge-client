@@ -5,7 +5,7 @@ import { SidebarProvider, SidebarTrigger } from './ui/sidebar';
 export function Sidebar() {
   return (
     <SidebarProvider>
-      <div className='h-full w-full'>
+      <div className='h-full'>
         <SidebarTrigger />
         <AppSidebar />
       </div>
