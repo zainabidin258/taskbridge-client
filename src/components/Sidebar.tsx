@@ -1,7 +1,14 @@
-import React from 'react';
+// Sidebar.tsx
+import { AppSidebar } from '@/components/sidebar/index';
+import { SidebarProvider, SidebarTrigger } from './ui/sidebar';
 
-const Sidebar = () => {
-  return <div>HG</div>;
-};
-
-export default Sidebar;
+export function Sidebar() {
+  return (
+    <SidebarProvider>
+      <div className='h-full w-full'>
+        <SidebarTrigger />
+        <AppSidebar />
+      </div>
+    </SidebarProvider>
+  );
+}

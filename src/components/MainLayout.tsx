@@ -1,13 +1,12 @@
 import { Outlet } from 'react-router-dom';
-import Sidebar from './Sidebar';
+import { Sidebar } from '@/components/Sidebar';
 
 const MainLayout = () => {
   return (
-    <div className='flex h-screen'>
-      <div className='flex shrink-0'>
-        <Sidebar />
-      </div>
-      <main className='flex flex-1 overflow-auto'>
+    <div className='grid grid-cols-[250px_1fr]'>
+      <Sidebar />
+
+      <main className=''>
         <Outlet />
       </main>
     </div>
