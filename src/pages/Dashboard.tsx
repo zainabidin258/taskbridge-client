@@ -10,7 +10,7 @@ const Dashboard: React.FC = () => {
 
   const fetchBoards = async () => {
     try {
-      const res = await api.get('http://localhost:5000/api/boards'); // your backend endpoint
+      const res = await api.get('http://localhost:5000/api/boards');
       setBoards(res.data);
     } catch (err) {
       console.error(err);

@@ -10,7 +10,7 @@ import SignUpPage from './pages/SignupPage';
 import Dashboard from './pages/Dashboard';
 // import BoardPage from './pages/BoardPage';
 import ProtectedRoute from '@/components/ProtectedRoute';
-import MainLayout from './components/MainLayout';
+import MainLayout from './components/layouts/MainLayout';
 
 const App = () => {
   return (
