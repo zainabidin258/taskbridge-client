@@ -1,46 +1,60 @@
 // src/pages/Dashboard.tsx
-import React, { useEffect, useState } from 'react';
-import BoardCard from '../components/BoardCard';
-import type { IBoard } from '../types/Board';
-import api from '../api/axios';
+import React, { useState } from 'react';
+import BoardCard from '@/components/BoardCard';
+import type { IBoard } from '@/types/Board';
+import api from '@/api/axios';
 import { Button } from '@/components/ui/button';
 import AppDialog from '@/components/dialog';
+import { useQuery, useQueryClient, useMutation } from '@tanstack/react-query';
+import { useNavigate } from 'react-router-dom';
 
 const Dashboard: React.FC = () => {
-  const [boards, setBoards] = useState<IBoard[]>([]);
-  const [loading, setLoading] = useState(true);
+  const queryClient = useQueryClient();
+  const navigate = useNavigate();
 
+  //Form states for create board
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
 
   const fetchBoards = async () => {
-    try {
-      const res = await api.get('http://localhost:5000/api/boards');
-      setBoards(res.data);
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setLoading(false);
-    }
+    const res = await api.get('/api/boards');
+    return res.data;
   };
+
+  //React query: fetch boards
+  const {
+    data: boards = [],
+    isLoading,
+    isError,
+    error,
+  } = useQuery({
+    queryKey: ['boards'],
+    queryFn: fetchBoards,
+  });
+
+  const createBoardMutation = useMutation({
+    mutationFn: async (boardData: { title: string; description: string }) => {
+      const res = await api.post('/api/boards', boardData);
+      return res.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['boards'] });
+
+      setTitle('');
+      setDescription('');
+    },
+    onError: (error) => {
+      console.error('Failed to create a new board', error);
+    },
+  });
 
   const handleCreateBoard = async (e: React.FormEvent) => {
     e.preventDefault();
-    try {
-      const res = await api.post('/api/boards', { title, description });
-      setBoards((prev) => [...prev, res.data]);
-      setTitle('');
-      setDescription('');
-    } catch (error) {
-      console.error(error);
-    }
+    createBoardMutation.mutate({ title, description });
   };
 
-  useEffect(() => {
-    fetchBoards();
-  }, []);
-
-  if (loading) return <p>Loading boards...</p>;
+  if (isLoading) return <p>Loading boards...</p>;
+  if (isError) return <p>Error loading boards: {error.message}</p>;
 
   return (
     <>
@@ -84,11 +98,11 @@ const Dashboard: React.FC = () => {
           </AppDialog>
         </div>
         <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 w-full'>
-          {boards.map((board) => (
+          {boards.map((board: IBoard) => (
             <BoardCard
               key={board._id}
               board={board}
-              onClick={() => console.log(board)}
+              onClick={() => navigate(`/boards/${board._id}`)}
             />
           ))}
         </div>

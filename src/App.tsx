@@ -11,6 +11,7 @@ import Dashboard from './pages/Dashboard';
 // import BoardPage from './pages/BoardPage';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import MainLayout from './components/layouts/MainLayout';
+import BoardPage from './pages/BoardPage';
 
 const App = () => {
   return (
@@ -25,6 +26,7 @@ const App = () => {
           <Route element={<ProtectedRoute />}>
             <Route element={<MainLayout />}>
               <Route path='/dashboard' element={<Dashboard />}></Route>
+              <Route path='/boards/:boardId' element={<BoardPage />} />
             </Route>
           </Route>
 
