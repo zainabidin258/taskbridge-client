@@ -9,7 +9,7 @@ import type { Task } from '@/types/Task';
 import AddTaskModal from './AddTaskModal';
 import DeleteModal from './DeleteModal';
 import { EditIcon, DeleteIcon, LoadingIcon } from './icons';
-import api from '@/api/axios';
+import { taskService } from '@/services';
 
 interface TaskCardProps {
   task: Task;
@@ -33,9 +33,7 @@ const TaskCard = ({
 
   const updateTaskMutation = useMutation({
     mutationFn: async (newTitle: string) => {
-      await api.put(`/api/tasks/${task._id}`, {
-        title: newTitle.trim(),
-      });
+      await taskService.updateTask(task._id, { title: newTitle.trim() });
     },
     onMutate: async (newTitle) => {
       // Cancel any outgoing refetches
@@ -67,7 +65,7 @@ const TaskCard = ({
 
   const deleteTaskMutation = useMutation({
     mutationFn: async () => {
-      await api.delete(`/api/tasks/${task._id}`);
+      await taskService.deleteTask(task._id);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['tasks', task.board] });
@@ -146,6 +144,7 @@ const TaskCard = ({
                     onChange={(e) => setEditedTitle(e.target.value)}
                     onKeyDown={handleTitleKeyDown}
                     onBlur={handleTitleSubmit}
+                    spellCheck='false'
                     className='font-semibold text-gray-900 bg-transparent border-b border-gray-300 focus:border-indigo-500 outline-none w-full'
                   />
                 ) : (

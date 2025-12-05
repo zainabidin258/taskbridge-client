@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import BoardCard from '@/components/BoardCard';
 import type { IBoard } from '@/types/Board';
-import api from '@/api/axios';
+import { boardService } from '@/services';
 import { Button } from '@/components/ui/button';
 import AppDialog from '@/components/dialog';
 import { useQuery, useQueryClient, useMutation } from '@tanstack/react-query';
@@ -16,11 +16,6 @@ const Dashboard: React.FC = () => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
 
-  const fetchBoards = async () => {
-    const res = await api.get('/api/boards');
-    return res.data;
-  };
-
   //React query: fetch boards
   const {
     data: boards = [],
@@ -29,13 +24,15 @@ const Dashboard: React.FC = () => {
     error,
   } = useQuery({
     queryKey: ['boards'],
-    queryFn: fetchBoards,
+    queryFn: () => boardService.getAllBoards(),
   });
 
   const createBoardMutation = useMutation({
     mutationFn: async (boardData: { title: string; description: string }) => {
-      const res = await api.post('/api/boards', boardData);
-      return res.data;
+      return boardService.createBoard({
+        name: boardData.title,
+        description: boardData.description,
+      });
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['boards'] });

@@ -8,18 +8,7 @@ import { handleDragEnd } from '@/utils/dragDrop';
 import type { Task } from '@/types/Task';
 import type { IBoard } from '@/types/Board';
 import { useState } from 'react';
-
-import api from '@/api/axios';
-
-const fetchBoard = async (boardId: string): Promise<IBoard> => {
-  const response = await api.get(`/api/boards/${boardId}`);
-  return response.data;
-};
-
-const fetchTasks = async (boardId: string): Promise<Task[]> => {
-  const response = await api.get(`/api/tasks/board/${boardId}`);
-  return response.data;
-};
+import { boardService, taskService } from '@/services';
 
 const BoardPage = () => {
   const { boardId } = useParams<{ boardId: string }>();
@@ -34,7 +23,7 @@ const BoardPage = () => {
     isError: boardError,
   } = useQuery<IBoard>({
     queryKey: ['board', boardId],
-    queryFn: () => fetchBoard(boardId!),
+    queryFn: () => boardService.getBoardById(boardId!),
     enabled: !!boardId,
   });
 
@@ -45,7 +34,7 @@ const BoardPage = () => {
     refetch: refetchTasks,
   } = useQuery<Task[]>({
     queryKey: ['tasks', boardId],
-    queryFn: () => fetchTasks(boardId!),
+    queryFn: () => taskService.getTasksByBoard(boardId!),
     enabled: !!boardId,
   });
 

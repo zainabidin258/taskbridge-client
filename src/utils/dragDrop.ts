@@ -2,15 +2,14 @@ import api from '@/api/axios';
 import type { DropResult } from '@hello-pangea/dnd';
 import type { Task } from '@/types/Task';
 import type { QueryClient } from '@tanstack/react-query';
+import { taskService } from '@/services';
 
 export const updateTaskStatus = async (taskId: string, newStatus: string) => {
   console.log('Updating task:', taskId, 'to status:', newStatus);
   try {
-    const response = await api.put(`/api/tasks/${taskId}`, {
-      status: newStatus,
-    });
-    console.log('Update response:', response.data);
-    return response.data;
+    const response = await taskService.updateTaskStatus(taskId, newStatus);
+    console.log('Update response:', response);
+    return response;
   } catch (error) {
     console.error('Update task error:', error);
     throw error;

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import api from '@/api/axios';
+import { taskService } from '@/services';
 import type { Task } from '@/types/Task';
 import {
   Dialog,
@@ -68,7 +68,7 @@ const AddTaskModal = ({
     try {
       if (existingTask) {
         // Update existing task
-        await api.put(`/api/tasks/${existingTask._id}`, {
+        await taskService.updateTask(existingTask._id, {
           title: title.trim(),
           description: description,
           status,
@@ -76,7 +76,7 @@ const AddTaskModal = ({
         });
       } else {
         // Create new task
-        await api.post('/api/tasks', {
+        await taskService.createTask({
           title: title.trim(),
           description: description,
           status,
