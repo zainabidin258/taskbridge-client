@@ -6,6 +6,7 @@ import KanbanColumn from '@/components/KanbanColumn';
 import { handleDragEnd } from '@/utils/dragDrop';
 import type { Task } from '@/types/Task';
 import type { IBoard } from '@/types/Board';
+import { useState } from 'react';
 
 import api from '@/api/axios';
 
@@ -22,6 +23,7 @@ const fetchTasks = async (boardId: string): Promise<Task[]> => {
 const BoardPage = () => {
   const { boardId } = useParams<{ boardId: string }>();
   const queryClient = useQueryClient();
+  const [showTip, setShowTip] = useState(true);
 
   const {
     data: board,
@@ -174,40 +176,58 @@ const BoardPage = () => {
         </div>
       </DragDropContext>
 
-      {/* Empty State (if no tasks at all) */}
-      {tasks?.length === 0 && (
-        <div className='flex-1 flex flex-col items-center justify-center p-12 text-center'>
-          <div className='w-24 h-24 rounded-full bg-gradient-to-br from-indigo-50 to-purple-50 flex items-center justify-center mb-6'>
-            <svg
-              className='w-12 h-12 text-indigo-400'
-              fill='none'
-              stroke='currentColor'
-              viewBox='0 0 24 24'
-            >
-              <path
-                strokeLinecap='round'
-                strokeLinejoin='round'
-                strokeWidth={1.5}
-                d='M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2'
-              />
-            </svg>
+      {/* Empty State Tip (if no tasks at all) */}
+      {tasks?.length === 0 && showTip && (
+        <div className='fixed top-30 right-8 z-40 animate-bounce ease-in duration-1400'>
+          <div className='bg-white rounded-lg shadow-lg border border-gray-200 p-4 max-w-xs relative'>
+            {/* Arrow pointing down */}
+            <div className='absolute -top-2 right-8 w-4 h-4 bg-white border-l border-t border-gray-200 transform rotate-45'></div>
+
+            <div className='flex items-start gap-3'>
+              <div className='w-8 h-8 rounded-full bg-gradient-to-br from-indigo-50 to-purple-50 flex items-center justify-center flex-shrink-0'>
+                <svg
+                  className='w-4 h-4 text-indigo-500'
+                  fill='none'
+                  stroke='currentColor'
+                  viewBox='0 0 24 24'
+                >
+                  <path
+                    strokeLinecap='round'
+                    strokeLinejoin='round'
+                    strokeWidth={2}
+                    d='M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z'
+                  />
+                </svg>
+              </div>
+              <div className='flex-1'>
+                <h4 className='font-semibold text-gray-900 text-sm mb-1'>
+                  Ready to get started?
+                </h4>
+                <p className='text-gray-600 text-xs'>
+                  Create your first task to organize your work and track
+                  progress.
+                </p>
+              </div>
+              <button
+                onClick={() => setShowTip(false)}
+                className='text-gray-400 hover:text-gray-600 transition ml-2 cursor-pointer'
+              >
+                <svg
+                  className='w-4 h-4'
+                  fill='none'
+                  stroke='currentColor'
+                  viewBox='0 0 24 24'
+                >
+                  <path
+                    strokeLinecap='round'
+                    strokeLinejoin='round'
+                    strokeWidth={2}
+                    d='M6 18L18 6M6 6l12 12'
+                  />
+                </svg>
+              </button>
+            </div>
           </div>
-          <h3 className='text-2xl font-semibold text-gray-900 mb-2'>
-            No tasks yet
-          </h3>
-          <p className='text-gray-600 max-w-md mb-6'>
-            Get started by creating your first task. Tasks help you organize and
-            track work across your team.
-          </p>
-          <button
-            onClick={() => {
-              // This would open a modal for the first task
-              // For now, you can implement this similarly to the column add task
-            }}
-            className='px-6 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-lg font-medium hover:from-indigo-700 hover:to-purple-700 transition shadow-md hover:shadow-lg'
-          >
-            Create Your First Task
-          </button>
         </div>
       )}
     </div>

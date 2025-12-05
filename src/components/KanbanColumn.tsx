@@ -97,27 +97,6 @@ const KanbanColumn = ({
             {provided.placeholder}
           </div>
 
-          {/* Add Task Button */}
-          <button
-            onClick={() => setIsModalOpen(true)}
-            className='mt-4 w-full py-3 text-gray-500 hover:text-gray-700 hover:bg-white rounded-xl border border-dashed border-gray-300 transition flex items-center justify-center gap-2 font-medium'
-          >
-            <svg
-              className='w-5 h-5'
-              fill='none'
-              stroke='currentColor'
-              viewBox='0 0 24 24'
-            >
-              <path
-                strokeLinecap='round'
-                strokeLinejoin='round'
-                strokeWidth={2}
-                d='M12 4v16m8-8H4'
-              />
-            </svg>
-            Add Task
-          </button>
-
           <AddTaskModal
             isOpen={isModalOpen}
             onClose={() => setIsModalOpen(false)}

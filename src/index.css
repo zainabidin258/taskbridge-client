@@ -120,3 +120,111 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* TipTap Editor Styles */
+.ProseMirror {
+  outline: none;
+  padding: 12px;
+  min-height: 100px;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.ProseMirror p {
+  margin: 0 0 8px 0;
+}
+
+.ProseMirror ul,
+.ProseMirror ol {
+  padding-left: 24px;
+  margin: 8px 0;
+  color: #374151; /* Force dark gray for list markers */
+}
+
+.ProseMirror ul {
+  list-style-type: disc;
+}
+
+.ProseMirror ol {
+  list-style-type: decimal;
+}
+
+.ProseMirror ul li,
+.ProseMirror ol li {
+  margin: 4px 0;
+  color: inherit; /* Allow text to inherit its own color */
+}
+
+/* Force list markers to be dark */
+.ProseMirror ul li::marker {
+  color: #374151;
+}
+
+.ProseMirror ol li::marker {
+  color: #374151;
+}
+
+.ProseMirror ul[data-type="taskList"] {
+  list-style: none;
+  padding: 0;
+}
+
+.ProseMirror ul[data-type="taskList"] li {
+  display: flex;
+  align-items: flex-start;
+}
+
+.ProseMirror ul[data-type="taskList"] li > label {
+  flex: 0 0 auto;
+  margin-right: 8px;
+  user-select: none;
+}
+
+.ProseMirror ul[data-type="taskList"] li > div {
+  flex: 1 1 auto;
+}
+
+.ProseMirror h1,
+.ProseMirror h2,
+.ProseMirror h3,
+.ProseMirror h4,
+.ProseMirror h5,
+.ProseMirror h6 {
+  margin: 16px 0 8px 0;
+  font-weight: 600;
+}
+
+.ProseMirror h1 { font-size: 1.5em; }
+.ProseMirror h2 { font-size: 1.3em; }
+.ProseMirror h3 { font-size: 1.1em; }
+
+.ProseMirror strong {
+  font-weight: 600;
+}
+
+.ProseMirror em {
+  font-style: italic;
+}
+
+.ProseMirror u {
+  text-decoration: underline;
+}
+
+.ProseMirror code {
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 2px;
+  padding: 2px 4px;
+  font-family: monospace;
+  font-size: 0.9em;
+}
+
+.ProseMirror blockquote {
+  border-left: 3px solid #ddd;
+  margin: 16px 0;
+  padding-left: 16px;
+  color: #666;
+}
+
+.ProseMirror:focus {
+  outline: none;
+}
