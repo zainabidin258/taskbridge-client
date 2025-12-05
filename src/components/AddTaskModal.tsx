@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import api from '@/api/axios';
+import type { Task } from '@/types/Task';
 import {
   Dialog,
   DialogContent,
@@ -25,6 +26,7 @@ interface AddTaskModalProps {
   onTaskCreated: () => void;
   boardId: string;
   defaultStatus?: string;
+  existingTask?: Task | null;
 }
 
 const AddTaskModal = ({
@@ -33,12 +35,29 @@ const AddTaskModal = ({
   onTaskCreated,
   boardId,
   defaultStatus = 'todo',
+  existingTask = null,
 }: AddTaskModalProps) => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [status, setStatus] = useState(defaultStatus);
   const [priority, setPriority] = useState('medium');
   const [isLoading, setIsLoading] = useState(false);
+
+  // Populate form when editing existing task
+  useEffect(() => {
+    if (existingTask) {
+      setTitle(existingTask.title);
+      setDescription(existingTask.description || '');
+      setStatus(existingTask.status);
+      setPriority(existingTask.priority || 'medium');
+    } else {
+      // Reset form for new task
+      setTitle('');
+      setDescription('');
+      setStatus(defaultStatus);
+      setPriority('medium');
+    }
+  }, [existingTask, defaultStatus, isOpen]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -47,13 +66,24 @@ const AddTaskModal = ({
 
     setIsLoading(true);
     try {
-      await api.post('/api/tasks', {
-        title: title.trim(),
-        description: description,
-        status,
-        board: boardId,
-        priority,
-      });
+      if (existingTask) {
+        // Update existing task
+        await api.put(`/api/tasks/${existingTask._id}`, {
+          title: title.trim(),
+          description: description,
+          status,
+          priority,
+        });
+      } else {
+        // Create new task
+        await api.post('/api/tasks', {
+          title: title.trim(),
+          description: description,
+          status,
+          board: boardId,
+          priority,
+        });
+      }
 
       onTaskCreated();
       onClose();
@@ -63,7 +93,7 @@ const AddTaskModal = ({
       setStatus(defaultStatus);
       setPriority('medium');
     } catch (error) {
-      console.error('Failed to create task:', error);
+      console.error('Failed to save task:', error);
     } finally {
       setIsLoading(false);
     }
@@ -73,7 +103,9 @@ const AddTaskModal = ({
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className='sm:max-w-[800px]'>
         <DialogHeader>
-          <DialogTitle>Add New Task</DialogTitle>
+          <DialogTitle>
+            {existingTask ? 'Edit Task' : 'Add New Task'}
+          </DialogTitle>
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className='space-y-4'>
@@ -136,7 +168,13 @@ const AddTaskModal = ({
               disabled={isLoading || !title.trim()}
               className='bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700'
             >
-              {isLoading ? 'Creating...' : 'Create Task'}
+              {isLoading
+                ? existingTask
+                  ? 'Updating...'
+                  : 'Creating...'
+                : existingTask
+                  ? 'Update Task'
+                  : 'Create Task'}
             </Button>
           </DialogFooter>
         </form>

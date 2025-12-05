@@ -14,6 +14,8 @@ interface KanbanColumnProps {
   tasks: Task[];
   boardId: string;
   onTaskCreated: () => void;
+  onTaskUpdated?: () => void;
+  onTaskDeleted?: () => void;
 }
 
 const KanbanColumn = ({
@@ -21,6 +23,8 @@ const KanbanColumn = ({
   tasks,
   boardId,
   onTaskCreated,
+  onTaskUpdated,
+  onTaskDeleted,
 }: KanbanColumnProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const columnTasks = tasks.filter((t: Task) => t.status === column.id);
@@ -84,14 +88,20 @@ const KanbanColumn = ({
                 <p className='text-sm'>No tasks here</p>
                 <button
                   onClick={() => setIsModalOpen(true)}
-                  className='mt-3 text-sm text-indigo-600 hover:text-indigo-800 font-medium'
+                  className='mt-3 text-sm text-indigo-600 hover:text-indigo-800 font-medium cursor-pointer'
                 >
                   + Add a task
                 </button>
               </div>
             ) : (
               columnTasks.map((task: Task, index: number) => (
-                <TaskCard key={task._id} task={task} index={index} />
+                <TaskCard
+                  key={task._id}
+                  task={task}
+                  index={index}
+                  onTaskUpdated={onTaskUpdated}
+                  onTaskDeleted={onTaskDeleted}
+                />
               ))
             )}
             {provided.placeholder}
